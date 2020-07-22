@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Shader.cs" />
+    <Compile Include="WaveMachine.cs" />
     <Compile Include="WaveSimWindow.cs" />
   </ItemGroup>
   <ItemGroup>

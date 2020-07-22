@@ -13,62 +13,20 @@ namespace WaveSim
 {
     class WaveSimWindow : GameWindow
     {
-        private int VertexBufferObject;
-        private int ElementBufferObject;
         public List<float> Vertices = new List<float>();
-        private Shader Ashader;
+
+        private int VertexBufferObject;
+        private Shader Shader0;
 
         public WaveSimWindow(int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
         {
-        }
-
-        public void CreateTriangle()
-        {
-            float[] vertices = {
-                -0.5f, -0.5f, 0.0f, //Bottom-left vertex
-                 0.5f, -0.5f, 0.0f, //Bottom-right vertex
-                 0.0f,  0.5f, 0.0f  //Top vertex
-            };
-
             VertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
         }
 
         public void BindObjects()
-        {
-            VertexBufferObject = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Count * sizeof(float), Vertices.ToArray(), BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
-        }
-
-        public void CreateRectangle()
-        {
-            float[] vertices = {
-                 0.5f,  0.5f, 0.0f,  // top right
-                 0.5f, -0.5f, 0.0f,  // bottom right
-                -0.5f, -0.5f, 0.0f,  // bottom left
-                -0.5f,  0.5f, 0.0f   // top left
-            };
-
-            uint[] indices = {  // note that we start from 0!
-                0, 1, 3,   // first triangle
-                1, 2, 3    // second triangle
-            };
-
-            VertexBufferObject = GL.GenBuffer();
-            ElementBufferObject = GL.GenBuffer();
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
-
+        {            
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Count * sizeof(float), Vertices.ToArray(), BufferUsageHint.DynamicDraw);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
         }
@@ -88,7 +46,9 @@ namespace WaveSim
         protected override void OnLoad(EventArgs e)
         {
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            Ashader = new Shader(@"../../shader.vert", @"../../shader.frag");
+            Shader0 = new Shader(@"../../shader.vert", @"../../shader.frag");
+
+            
 
             base.OnLoad(e);
         }
@@ -97,7 +57,7 @@ namespace WaveSim
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.DeleteBuffer(VertexBufferObject);
-            Ashader.Dispose();
+            Shader0.Dispose();
 
             base.OnUnload(e);
         }
@@ -106,13 +66,11 @@ namespace WaveSim
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            Ashader.Use();
-
+            Shader0.Use();
             for (int i = 0; i < Vertices.Count; i += 3)
             {
                 GL.DrawArrays(PrimitiveType.Triangles, i, 3);
             }
-            //GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, 0);
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
