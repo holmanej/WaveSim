@@ -1,6 +1,8 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,51 +13,64 @@ namespace WaveSim
     class WaveMachine
     {
         private WaveSimWindow SimWin;
+        private PrimitiveHelper Helper;
+        private float angle = 0;
 
         public WaveMachine()
         {
-            Timer bindTimer = new Timer()
+            using (SimWin = new WaveSimWindow(800, 600, "Wave Simulator"))
             {
-                Interval = 1000
-            };
-            bindTimer.Elapsed += BindTimer_Elapsed;
+                Helper = new PrimitiveHelper(SimWin);
 
-            SimWin = new WaveSimWindow(800, 600, "Wave Simulator");
+                //List<float> vertices = new List<float>() {
+                //    0f, 0.5f, 0f,
+                //    -0.5f, -0.5f, 0f,
+                //    0.5f, -0.5f, 0.0f,
+                //};
+                //List<float> colors = new List<float>();
+                //for (int i = 0; i < 3; i++)
+                //{
+                //    colors.AddRange(new List<float>() { 0, 0, 0, 1 });
+                //}
+                //Helper.AppendTriangle(vertices, colors);
+                //Helper.AppendSquare(-0.5f, -0.5f, 0.4f, 0.4f);
 
-            List<float> vertices = new List<float>() {
-                     0.5f,  0.5f, 0.0f,  // top right
-                     0.5f, -0.5f, 0.0f,  // bottom right
-                    -0.5f,  0.5f, 0.0f,   // top left
-                     0.5f, -0.5f, 0.0f,  // bottom right
-                    -0.5f, -0.5f, 0.0f,  // bottom left
-                    -0.5f,  0.5f, 0.0f   // top left
+                List<float> colors = new List<float>();
+                for (int i = 0; i < 8; i++)
+                {
+                    colors.AddRange(new List<float>() { 0, 0, 0, 1 });
+                }
+
+                Helper.AppendRectPrism(-0.5f, -0.5f, -0.5f, 1f, 1f, 1f, colors);
+
+                Timer rTimer = new Timer()
+                {
+                    Interval = 10
                 };
-            SimWin.Vertices.AddRange(vertices);
-            //SimWin.BindObjects();
-            bindTimer.Start();
-            SimWin.Run(60);
+                rTimer.Elapsed += RTimer_Elapsed;
+                rTimer.Start();
 
-            //using (SimWin = new WaveSimWindow(800, 600, "Wave Simulator"))
-            //{
-            //    List<float> vertices = new List<float>() {
-            //         0.5f,  0.5f, 0.0f,  // top right
-            //         0.5f, -0.5f, 0.0f,  // bottom right
-            //        -0.5f,  0.5f, 0.0f,   // top left
-            //         0.5f, -0.5f, 0.0f,  // bottom right
-            //        -0.5f, -0.5f, 0.0f,  // bottom left
-            //        -0.5f,  0.5f, 0.0f   // top left
-            //    };
-            //    SimWin.Vertices.AddRange(vertices);
+                
 
-
-            //    SimWin.Run(60);
-            //}
+                SimWin.VSync = VSyncMode.Adaptive;
+                SimWin.Run(60, 0);
+            }
         }
 
-        private void BindTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void RTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Debug.WriteLine("tick-bind");
-            SimWin.BindObjects();
+            angle += 1;
+
+            List<Matrix4> transform = new List<Matrix4>()
+            {
+                Matrix4.CreateTranslation(0f, 0f, 0f),
+                Matrix4.CreateScale(1f, 1f, 1f),
+                Matrix4.CreateRotationX(10f * 3.14f / 180f),
+                Matrix4.CreateRotationY(-angle * 3.14f / 180f),
+                Matrix4.CreateRotationZ(0f * 3.14f / 180f)
+            };
+
+            SimWin.Transform = transform;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -67,6 +68,11 @@ namespace WaveSim
         public void Use()
         {
             GL.UseProgram(Handle);
+
+            //Matrix4 id = Matrix4.Identity;
+
+            //int loc = GL.GetUniformLocation(Handle, "transform");
+            //GL.UniformMatrix4(loc, true, ref id);
         }
 
         private bool disposedValue = false;
@@ -91,6 +97,19 @@ namespace WaveSim
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public int GetAttribLoc(string attribName)
+        {
+            return GL.GetAttribLocation(Handle, attribName);
+        }
+
+        public void SetTransform(Matrix4 t, Matrix4 s, Matrix4 rX, Matrix4 rY, Matrix4 rZ)
+        {
+            Matrix4 transform = t * rZ * rY * rX * s;
+
+            int loc = GL.GetUniformLocation(Handle, "transform");
+            GL.UniformMatrix4(loc, true, ref transform);
         }
     }
 }
