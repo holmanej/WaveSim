@@ -26,22 +26,11 @@ namespace WaveSim
                 //    0f, 0.5f, 0f,
                 //    -0.5f, -0.5f, 0f,
                 //    0.5f, -0.5f, 0.0f,
-                //};
-                //List<float> colors = new List<float>();
-                //for (int i = 0; i < 3; i++)
-                //{
-                //    colors.AddRange(new List<float>() { 0, 0, 0, 1 });
                 //}
-                //Helper.AppendTriangle(vertices, colors);
+                //Helper.AppendTriangle(vertices);
                 //Helper.AppendSquare(-0.5f, -0.5f, 0.4f, 0.4f);
 
-                List<float> colors = new List<float>();
-                for (int i = 0; i < 8; i++)
-                {
-                    colors.AddRange(new List<float>() { 0, 0, 0, 1 });
-                }
-
-                Helper.AppendRectPrism(-0.5f, -0.5f, -0.5f, 1f, 1f, 1f, colors);
+                Helper.AppendRectPrism(-0.1f, -0.1f, -0.1f, 0.2f, 0.2f, 0.2f);
 
                 Timer rTimer = new Timer()
                 {
@@ -65,9 +54,9 @@ namespace WaveSim
             {
                 Matrix4.CreateTranslation(0f, 0f, 0f),
                 Matrix4.CreateScale(1f, 1f, 1f),
-                Matrix4.CreateRotationX(10f * 3.14f / 180f),
+                Matrix4.CreateRotationX(20f * 3.14f / 180f),
                 Matrix4.CreateRotationY(-angle * 3.14f / 180f),
-                Matrix4.CreateRotationZ(0f * 3.14f / 180f)
+                Matrix4.CreateRotationZ(0 * 3.14f / 180f)
             };
 
             SimWin.Transform = transform;

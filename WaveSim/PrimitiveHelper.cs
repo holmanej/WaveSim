@@ -11,7 +11,6 @@ namespace WaveSim
     class PrimitiveHelper
     {
         private List<float> Vertices = new List<float>();
-        private List<float> Colors = new List<float>();
         private List<uint> Indices = new List<uint>();
 
         private WaveSimWindow Window;
@@ -23,29 +22,25 @@ namespace WaveSim
         private void UpdateWindowLists()
         {
             Window.Vertices = Vertices;
-            Window.Colors = Colors;
             Window.Indices = Indices;
         }
 
         public void ClearPrimitiveLists()
         {
             Vertices.Clear();
-            Colors.Clear();
             Indices.Clear();
             UpdateWindowLists();
         }
 
-        public void AppendTriangle(List<float> vertices, List<float> color)
+        public void AppendTriangle(List<float> vertices)
         {
             Indices.AddRange(new List<uint>() { 0, 1, 2 }.Select((n) => n + (uint)Vertices.Count / 3));
-
-            Colors.AddRange(color);
             Vertices.AddRange(vertices);
 
             UpdateWindowLists();
         }
 
-        public void AppendSquare(float x, float y, float w, float h, List<float> color)
+        public void AppendSquare(float x, float y, float w, float h)
         {
 
             List<float> vertices = new List<float>() {
@@ -56,12 +51,11 @@ namespace WaveSim
             };
 
             Indices.AddRange(new List<uint>() { 0, 1, 2, 1, 2, 3 }.Select(n => n + (uint)Vertices.Count / 3));
-            Colors.AddRange(color);
             Vertices.AddRange(vertices);
             UpdateWindowLists();
         }
 
-        public void AppendRectPrism(float x, float y, float z, float w, float h, float d, List<float> color)
+        public void AppendRectPrism(float x, float y, float z, float w, float h, float d)
         {
             List<float> vertices = new List<float>()
             {
@@ -92,7 +86,6 @@ namespace WaveSim
             };
 
             Indices.AddRange(indices.Select(n => n + (uint)Vertices.Count / 3));
-            Colors.AddRange(color);
             Vertices.AddRange(vertices);
             UpdateWindowLists();
         }

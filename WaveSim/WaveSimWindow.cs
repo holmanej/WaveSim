@@ -14,12 +14,10 @@ namespace WaveSim
     class WaveSimWindow : GameWindow
     {
         public List<float> Vertices = new List<float>();
-        public List<float> Colors = new List<float>();
         public List<uint> Indices = new List<uint>();
         public List<Matrix4> Transform = new List<Matrix4>();
 
         private int VertexBufferObject;
-        private int ColorBufferObject;
         private int ElementBufferObject;
         private Shader Shader0;
 
@@ -28,26 +26,18 @@ namespace WaveSim
             VertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
 
-            //ColorBufferObject = GL.GenBuffer();
-            //GL.BindBuffer(BufferTarget.ArrayBuffer, ColorBufferObject);
-
             ElementBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
         }
 
-        public void BindObjects()
-        {            
-            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Count * sizeof(float), Vertices.ToArray(), BufferUsageHint.DynamicDraw);            
-            //GL.BufferData(BufferTarget.ArrayBuffer, Colors.Count * sizeof(float), Colors.ToArray(), BufferUsageHint.DynamicDraw);            
+        private void BufferObjects()
+        {
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Count * sizeof(float), Vertices.ToArray(), BufferUsageHint.DynamicDraw);
             GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Count * sizeof(uint), Indices.ToArray(), BufferUsageHint.StaticDraw);
 
             int loc = Shader0.GetAttribLoc("vPosition");
             GL.EnableVertexAttribArray(loc);
             GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-
-            //loc = Shader0.GetAttribLoc("vColor");
-            //GL.EnableVertexAttribArray(loc);
-            //GL.VertexAttribPointer(loc, 4, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -59,7 +49,7 @@ namespace WaveSim
                 Exit();
             }
 
-            BindObjects();
+            BufferObjects();
 
             base.OnUpdateFrame(e);
         }
@@ -68,8 +58,7 @@ namespace WaveSim
         {
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
-            Shader0 = new Shader(@"../../shader.vert", @"../../shader.frag");
-            
+            Shader0 = new Shader(@"../../shader.vert", @"../../shader.frag");         
 
             base.OnLoad(e);
         }
@@ -77,7 +66,6 @@ namespace WaveSim
         protected override void OnUnload(EventArgs e)
         {
             GL.DeleteBuffer(VertexBufferObject);
-            GL.DeleteBuffer(ColorBufferObject);
             GL.DeleteBuffer(ElementBufferObject);
             Shader0.Dispose();
 

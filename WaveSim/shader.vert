@@ -1,14 +1,17 @@
 #version 330 core
 
 in vec3 vPosition;
-in vec4 vColor;
 
+out vec4 pos;
 out vec4 color;
 
 uniform mat4 transform;
 
 void main()
 {
-    gl_Position = transform * vec4(vPosition, 1.0);
-	color = vColor;
+	
+	vec4 temp = transform * vec4(vPosition, 1.0);    
+	
+	pos = temp;	
+	gl_Position = temp;
 }
