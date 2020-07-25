@@ -14,7 +14,6 @@ namespace WaveSim
     class WaveSimWindow : GameWindow
     {
         public List<float> Vertices = new List<float>();
-        public List<uint> Indices = new List<uint>();
         public List<Matrix4> Transform = new List<Matrix4>();
 
         private int VertexBufferObject;
@@ -33,11 +32,14 @@ namespace WaveSim
         private void BufferObjects()
         {
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Count * sizeof(float), Vertices.ToArray(), BufferUsageHint.DynamicDraw);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Count * sizeof(uint), Indices.ToArray(), BufferUsageHint.StaticDraw);
 
             int loc = Shader0.GetAttribLoc("vPosition");
             GL.EnableVertexAttribArray(loc);
-            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
+
+            loc = Shader0.GetAttribLoc("vNormal");
+            GL.EnableVertexAttribArray(loc);
+            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -79,7 +81,7 @@ namespace WaveSim
             Shader0.Use();
             Shader0.SetTransform(Transform[0], Transform[1], Transform[2], Transform[3], Transform[4]);
 
-            GL.DrawElements(PrimitiveType.Triangles, Indices.Count, DrawElementsType.UnsignedInt, 0);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, Vertices.Count);
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);

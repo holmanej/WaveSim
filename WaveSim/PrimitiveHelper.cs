@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.ES20;
+﻿using OpenTK;
+using OpenTK.Graphics.ES20;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +12,6 @@ namespace WaveSim
     class PrimitiveHelper
     {
         private List<float> Vertices = new List<float>();
-        private List<uint> Indices = new List<uint>();
 
         private WaveSimWindow Window;
 
@@ -22,36 +22,18 @@ namespace WaveSim
         private void UpdateWindowLists()
         {
             Window.Vertices = Vertices;
-            Window.Indices = Indices;
         }
 
         public void ClearPrimitiveLists()
         {
             Vertices.Clear();
-            Indices.Clear();
             UpdateWindowLists();
         }
 
         public void AppendTriangle(List<float> vertices)
         {
-            Indices.AddRange(new List<uint>() { 0, 1, 2 }.Select((n) => n + (uint)Vertices.Count / 3));
             Vertices.AddRange(vertices);
 
-            UpdateWindowLists();
-        }
-
-        public void AppendSquare(float x, float y, float w, float h)
-        {
-
-            List<float> vertices = new List<float>() {
-                x, y, 0,
-                x + w, y, 0,
-                x, y + h, 0,
-                x + w, y + h, 0
-            };
-
-            Indices.AddRange(new List<uint>() { 0, 1, 2, 1, 2, 3 }.Select(n => n + (uint)Vertices.Count / 3));
-            Vertices.AddRange(vertices);
             UpdateWindowLists();
         }
 
@@ -59,34 +41,96 @@ namespace WaveSim
         {
             List<float> vertices = new List<float>()
             {
-                x, y, z,
-                x + w, y, z,
-                x, y + h, z,
-                x + w, y + h, z,
-                x, y, z + d,
-                x + w, y, z + d,
-                x, y + h, z + d,
-                x + w, y + h, z + d
+                x, y, z,                // 0
+                x + w, y, z,            // 1
+                x, y + h, z,            // 2
+                x + w, y, z,            // 1
+                x, y + h, z,            // 2
+                x + w, y + h, z,        // 3
+
+                x, y, z + d,            // 4
+                x + w, y, z + d,        // 5
+                x, y + h, z + d,        // 6
+                x + w, y, z + d,        // 5
+                x, y + h, z + d,        // 6
+                x + w, y + h, z + d,    // 7
+
+                x, y, z,                // 0
+                x, y + h, z,            // 2
+                x, y, z + d,            // 4
+                x, y + h, z,            // 2
+                x + w, y, z + d,        // 5
+                x, y + h, z + d,        // 6
+
+                x + w, y, z,            // 1
+                x + w, y + h, z,        // 3
+                x + w, y, z + d,        // 5
+                x + w, y + h, z,        // 3
+                x + w, y, z + d,        // 5
+                x + w, y + h, z + d,    // 7
+
+                x, y + h, z,            // 2
+                x + w, y + h, z,        // 3
+                x, y + h, z + d,        // 6
+                x + w, y + h, z,        // 3
+                x, y + h, z + d,        // 6
+                x + w, y + h, z + d,    // 7
+
+                x, y, z,                // 0
+                x + w, y, z,            // 1
+                x, y, z + d,            // 4
+                x + w, y, z,            // 1
+                x, y, z + d,            // 4
+                x + w, y, z + d         // 5
             };
 
-            List<uint> indices = new List<uint>()
+            vertices = new List<float>()
             {
-                0, 1, 2,    // front
-                1, 2, 3,
-                4, 5, 6,    // back
-                5, 6, 7,
-                0, 2, 4,    // left
-                2, 5, 6,
-                1, 3, 5,    // right
-                3, 5, 7,
-                2, 3, 6,    // top
-                3, 6, 7,
-                0, 1, 4,    // bottom
-                1, 4, 5
-            };
+                // Position          Normal
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, // Front face
+             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-            Indices.AddRange(indices.Select(n => n + (uint)Vertices.Count / 3));
-            Vertices.AddRange(vertices);
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, // Back face
+             0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, // Left face
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, // Right face
+             0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, // Bottom face
+             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, // Top face
+             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        };
+
+            Vertices.AddRange(vertices.Select(n => n / 2f));
             UpdateWindowLists();
         }
 

@@ -1,6 +1,7 @@
 #version 330 core
 
 in vec4 pos;
+in vec4 norm;
 out vec4 fragColor;
 
 void main()
@@ -11,11 +12,11 @@ void main()
 	float ambientPow = 0.1;
 	vec4 ambient = ambientPow * lightColor;
 	
-	vec4 norm = vec4(1f, 1f, -1f, 1f);
+	vec4 normal = normalize(norm);
 	vec4 light = vec4(-1f, 1f, -1f, 1f);
 	vec4 lightDir = normalize(light - pos);
 	
-	float diff = max(dot(norm, lightDir), 0.0);
+	float diff = max(dot(normal, lightDir), 0.0);
 	vec4 diffuse = diff * lightColor;
 
 	vec4 result = (ambient + diffuse) * objColor;
