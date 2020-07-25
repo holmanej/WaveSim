@@ -104,6 +104,12 @@ namespace WaveSim
             return GL.GetAttribLocation(Handle, attribName);
         }
 
+        public void SetMatrix4(string name, Matrix4 data)
+        {
+            GL.UseProgram(Handle);
+            GL.UniformMatrix4(GL.GetUniformLocation(Handle, name), true, ref data);
+        }
+
         public void SetTransform(Matrix4 t, Matrix4 s, Matrix4 rX, Matrix4 rY, Matrix4 rZ)
         {
             Matrix4 transform = t * rZ * rY * rX * s;
