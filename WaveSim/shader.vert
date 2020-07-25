@@ -21,5 +21,5 @@ void main()
 	pos = temp;
 	color = vColor;
 	norm = transform * vec4(vNormal, 1.0);
-	gl_Position = projection * view * model * vec4(vPosition, 1.0);
+	gl_Position = view * model * vec4(vPosition, 1.0);
 }
