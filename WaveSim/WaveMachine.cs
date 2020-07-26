@@ -14,7 +14,6 @@ namespace WaveSim
     {
         private WaveSimWindow SimWin;
         private PrimitiveHelper Helper;
-        private float angle = 0;
 
         public WaveMachine()
         {
@@ -22,11 +21,41 @@ namespace WaveSim
             {
                 Helper = new PrimitiveHelper(SimWin);
 
-                Helper.AppendRectPrism(-0.7f, -0.8f, -0.7f, 1.4f, 0.01f, 1.4f, 1f, 0.5f, 0.2f, 1f);
-                Helper.AppendRectPrism(-0.1f, -0.1f, -0.1f, 0.2f, 0.2f, 0.2f, 1f, 0.2f, 0.5f, 1f);
+                Timer updateTimer = new Timer()
+                {
+                    Interval = 20
+                };
+                updateTimer.Elapsed += UpdateTimer_Elapsed;
+                updateTimer.Start();
+
+                //Helper.AppendRectPrism(-1f, 0f, -1f, 2f, 0.01f, 2f, 1f, 0.5f, 0.2f, 1f);
+                //double t = SimWin.simTime;
+
+                //for (int i = 0; i < 100; i++)
+                //{
+                //    Helper.AppendRectPrism(-1f + i * 0.02f, 0.01f, 0f, 0.02f, (float)Math.Sin(t - (i / -6.28f * 0.8f) / 2f) * 1f, 0.02f, 1f, 0.7f, 0.1f, 1f);
+                //}
 
                 SimWin.VSync = VSyncMode.Adaptive;
                 SimWin.Run(60, 0);
+            }
+        }
+
+        private void UpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            ChangeData();
+        }
+
+        private void ChangeData()
+        {
+            Helper.ClearPrimitiveLists();
+            Helper.AppendRectPrism(-1f, 0f, -1f, 2f, 0.01f, 2f, 1f, 0.5f, 0.2f, 1f);
+
+            double t = SimWin.simTime;
+
+            for (int i = 0; i < 100; i++)
+            {
+                Helper.AppendRectPrism(-1f + i * 0.02f, 0.01f, 0f, 0.02f, (float)Math.Sin(t - (i / -6.28f * 0.8f) / 2f) * 1f, 0.02f, 1f, 0.7f, 0.1f, 1f);
             }
         }
     }

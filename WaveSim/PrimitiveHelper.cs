@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.ES20;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -19,22 +20,17 @@ namespace WaveSim
         {
             Window = window;
         }
-        private void UpdateWindowLists()
-        {
-            Window.Vertices = Vertices;
-        }
 
         public void ClearPrimitiveLists()
         {
             Vertices.Clear();
-            UpdateWindowLists();
+            Window.Vertices = Vertices;
         }
 
         public void AppendTriangle(List<float> vertices)
         {
             Vertices.AddRange(vertices);
-
-            UpdateWindowLists();
+            Window.Vertices = Vertices;
         }
 
         public void AppendRectPrism(float x, float y, float z, float w, float h, float d, float r, float b, float g, float a)
@@ -84,54 +80,54 @@ namespace WaveSim
                 x + w, y, z + d,      0f, y * 2, 0f,        r, b, g, a 		// 5
             };
 
-        //    vertices = new List<float>()
-        //    {
-        //        // Position          Normal
-        //        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, // Front face
-        //     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        //     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        //     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        //    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        //    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            //    vertices = new List<float>()
+            //    {
+            //        // Position          Normal
+            //        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, // Front face
+            //     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            //     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            //     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            //    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            //    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-        //    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, // Back face
-        //     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        //     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        //     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        //    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        //    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            //    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, // Back face
+            //     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            //     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            //     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            //    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            //    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 
-        //    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, // Left face
-        //    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        //    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        //    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        //    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        //    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            //    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, // Left face
+            //    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            //    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            //    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            //    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            //    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-        //     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, // Right face
-        //     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        //     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        //     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-        //     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-        //     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            //     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, // Right face
+            //     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            //     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            //     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            //     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            //     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-        //    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, // Bottom face
-        //     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-        //     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        //     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        //    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        //    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            //    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, // Bottom face
+            //     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            //     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            //     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            //    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            //    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-        //    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, // Top face
-        //     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-        //     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        //     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        //    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        //    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-        //};
+            //    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, // Top face
+            //     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+            //     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            //     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            //    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            //    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+            //};
 
             Vertices.AddRange(vertices);
-            UpdateWindowLists();
+            Window.Vertices = Vertices;
         }
 
     }

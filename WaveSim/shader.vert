@@ -10,7 +10,7 @@ uniform mat4 projection;
 
 out vec4 pos;
 out vec4 color;
-out vec4 norm;
+out vec3 norm;
 
 uniform mat4 transform;
 
@@ -18,8 +18,9 @@ void main()
 {
 	vec4 temp = transform * vec4(vPosition, 1.0);
 
-	pos = temp;
-	color = vColor;
-	norm = transform * vec4(vNormal, 1.0);
+	pos = temp * model;
+	color = vColor;	
+	norm = vNormal * mat3(transpose(inverse(model)));
+	
 	gl_Position = temp * model * view * projection;
 }

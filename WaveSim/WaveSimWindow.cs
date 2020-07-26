@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
@@ -16,6 +17,8 @@ namespace WaveSim
     {
         public List<float> Vertices = new List<float>();
         public List<Matrix4> Transform = new List<Matrix4>();
+        public double simTime = 0;
+
         public Matrix4 Model;
         public Matrix4 View;
         public Matrix4 Projection;
@@ -62,6 +65,7 @@ namespace WaveSim
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             KeyboardState input = Keyboard.GetState();
+            simTime += e.Time;
 
             if (input.IsKeyDown(Key.Escape))
             {
@@ -70,12 +74,12 @@ namespace WaveSim
 
             if (input.IsKeyDown(Key.Left))
             {
-                y -= 0.1f;
+                y -= 0.05f;
             }
 
             if (input.IsKeyDown(Key.Right))
             {
-                y += 0.1f;
+                y += 0.05f;
             }
 
             SetAngle(0f, y, 0);
@@ -101,8 +105,8 @@ namespace WaveSim
             Shader0 = new Shader(@"../../shader.vert", @"../../shader.frag");
             Shader0.Use();
 
-            Model = Matrix4.CreateRotationX(15f * 3.14f / 180);
-            View = Matrix4.CreateTranslation(0f, 0f, -3f);
+            Model = Matrix4.CreateRotationX(20f * 3.14f / 180);
+            View = Matrix4.CreateTranslation(0f, 0f, -5f);
             Projection = Matrix4.CreatePerspectiveFieldOfView(45f * 3.14f / 180f, Width / (float)Height, 0.1f, 100f);            
 
             base.OnLoad(e);
@@ -123,9 +127,6 @@ namespace WaveSim
 
             Shader0.Use();
             Shader0.SetTransform(Transform[0], Transform[1], Transform[2], Transform[3], Transform[4]);
-
-            //View = Matrix4.CreateTranslation(0, 0f, y);
-            //Debug.WriteLine(y);
 
             Shader0.SetMatrix4("model", Model);
             Shader0.SetMatrix4("view", View);
