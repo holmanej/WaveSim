@@ -70,15 +70,15 @@ namespace WaveSim
 
             if (input.IsKeyDown(Key.Left))
             {
-                y -= 0.5f;
+                y -= 0.1f;
             }
 
             if (input.IsKeyDown(Key.Right))
             {
-                y += 0.5f;
+                y += 0.1f;
             }
 
-            //SetAngle(0, y, 0);
+            SetAngle(0f, y, 0);
             BufferObjects();
 
             base.OnUpdateFrame(e);
@@ -101,7 +101,7 @@ namespace WaveSim
             Shader0 = new Shader(@"../../shader.vert", @"../../shader.frag");
             Shader0.Use();
 
-            Model = Matrix4.Identity * Matrix4.CreateRotationX(-55f * 3.14f / 180f);
+            Model = Matrix4.CreateRotationX(15f * 3.14f / 180);
             View = Matrix4.CreateTranslation(0f, 0f, -3f);
             Projection = Matrix4.CreatePerspectiveFieldOfView(45f * 3.14f / 180f, Width / (float)Height, 0.1f, 100f);            
 
@@ -124,7 +124,8 @@ namespace WaveSim
             Shader0.Use();
             Shader0.SetTransform(Transform[0], Transform[1], Transform[2], Transform[3], Transform[4]);
 
-            Model = Matrix4.Identity * Matrix4.CreateRotationX(y * 3.14f / 180f);
+            //View = Matrix4.CreateTranslation(0, 0f, y);
+            //Debug.WriteLine(y);
 
             Shader0.SetMatrix4("model", Model);
             Shader0.SetMatrix4("view", View);
