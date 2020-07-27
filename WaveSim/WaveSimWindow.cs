@@ -15,7 +15,7 @@ namespace WaveSim
 {
     class WaveSimWindow : GameWindow
     {
-        public List<float> Vertices = new List<float>();
+        public float[] Vertices;
         public List<Matrix4> Transform = new List<Matrix4>();
         public double simTime = 0;
 
@@ -27,7 +27,11 @@ namespace WaveSim
         private int ElementBufferObject;
         private Shader Shader0;
 
-        private float y = 0;
+        private int BufferLength;
+        private float yRotation = 0;
+        private float xRotation = 0;
+        private float Zoom = 0;
+        
 
         public WaveSimWindow(int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
         {
@@ -36,23 +40,36 @@ namespace WaveSim
 
             ElementBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
+
+            MouseMove += WaveSimWindow_MouseMove;
+            MouseWheel += WaveSimWindow_MouseWheel;
         }
 
-        private void BufferObjects()
+        private void WaveSimWindow_MouseMove(object sender, MouseMoveEventArgs e)
         {
-            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Count * sizeof(float), Vertices.ToArray(), BufferUsageHint.DynamicDraw);
+            if (e.Mouse.LeftButton == ButtonState.Pressed)
+            {
+                yRotation -= e.XDelta / 150f;
+                xRotation += e.YDelta / 7f;
+            }
+        }
 
-            int loc = Shader0.GetAttribLoc("vPosition");
-            GL.EnableVertexAttribArray(loc);
-            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 10 * sizeof(float), 0);
+        private void WaveSimWindow_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.DeltaPrecise > 0)
+            {
+                Zoom += 1f;
+            }
+            else
+            {
+                Zoom -= 1f;
+            }
+        }
 
-            loc = Shader0.GetAttribLoc("vNormal");
-            GL.EnableVertexAttribArray(loc);
-            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 10 * sizeof(float), 3 * sizeof(float));
-
-            loc = Shader0.GetAttribLoc("vColor");
-            GL.EnableVertexAttribArray(loc);
-            GL.VertexAttribPointer(loc, 4, VertexAttribPointerType.Float, false, 10 * sizeof(float), 6 * sizeof(float));
+        public void BufferObjects()
+        {
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.DynamicDraw);
+            BufferLength = Vertices.Length;
         }
 
         private void SetAngle(float x, float y, float z)
@@ -72,17 +89,7 @@ namespace WaveSim
                 Exit();
             }
 
-            if (input.IsKeyDown(Key.Left))
-            {
-                y -= 0.05f;
-            }
-
-            if (input.IsKeyDown(Key.Right))
-            {
-                y += 0.05f;
-            }
-
-            SetAngle(0f, y, 0);
+            SetAngle(0f, yRotation, 0);
             BufferObjects();
 
             base.OnUpdateFrame(e);
@@ -107,7 +114,19 @@ namespace WaveSim
 
             Model = Matrix4.CreateRotationX(20f * 3.14f / 180);
             View = Matrix4.CreateTranslation(0f, 0f, -5f);
-            Projection = Matrix4.CreatePerspectiveFieldOfView(45f * 3.14f / 180f, Width / (float)Height, 0.1f, 100f);            
+            Projection = Matrix4.CreatePerspectiveFieldOfView(45f * 3.14f / 180f, Width / (float)Height, 0.1f, 100f);
+
+            int loc = Shader0.GetAttribLoc("vPosition");
+            GL.EnableVertexAttribArray(loc);
+            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 10 * sizeof(float), 0);
+
+            loc = Shader0.GetAttribLoc("vNormal");
+            GL.EnableVertexAttribArray(loc);
+            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 10 * sizeof(float), 3 * sizeof(float));
+
+            loc = Shader0.GetAttribLoc("vColor");
+            GL.EnableVertexAttribArray(loc);
+            GL.VertexAttribPointer(loc, 4, VertexAttribPointerType.Float, false, 10 * sizeof(float), 6 * sizeof(float));
 
             base.OnLoad(e);
         }
@@ -128,11 +147,14 @@ namespace WaveSim
             Shader0.Use();
             Shader0.SetTransform(Transform[0], Transform[1], Transform[2], Transform[3], Transform[4]);
 
+            Model = Matrix4.CreateRotationX((20f + xRotation) * 3.14f / 180);
+            View = Matrix4.CreateTranslation(0f, 0f, -5f + Zoom);
+
             Shader0.SetMatrix4("model", Model);
             Shader0.SetMatrix4("view", View);
             Shader0.SetMatrix4("projection", Projection);
 
-            GL.DrawArrays(PrimitiveType.Triangles, 0, Vertices.Count);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, BufferLength);
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);

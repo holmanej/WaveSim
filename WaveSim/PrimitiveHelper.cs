@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace WaveSim
 {
     class PrimitiveHelper
     {
-        private List<float> Vertices = new List<float>();
+        private List<float> Vertices = new List<float>();        
 
         private WaveSimWindow Window;
 
@@ -21,16 +22,19 @@ namespace WaveSim
             Window = window;
         }
 
-        public void ClearPrimitiveLists()
+        public void ClearVertices()
         {
             Vertices.Clear();
-            Window.Vertices = Vertices;
+        }
+
+        public void UpdateVertices()
+        {
+            Window.Vertices = Vertices.ToArray();
         }
 
         public void AppendTriangle(List<float> vertices)
         {
             Vertices.AddRange(vertices);
-            Window.Vertices = Vertices;
         }
 
         public void AppendRectPrism(float x, float y, float z, float w, float h, float d, float r, float b, float g, float a)
@@ -80,54 +84,8 @@ namespace WaveSim
                 x + w, y, z + d,      0f, y * 2, 0f,        r, b, g, a 		// 5
             };
 
-            //    vertices = new List<float>()
-            //    {
-            //        // Position          Normal
-            //        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, // Front face
-            //     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            //     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            //     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            //    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            //    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-            //    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, // Back face
-            //     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            //     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            //     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            //    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            //    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-
-            //    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, // Left face
-            //    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            //    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            //    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            //    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            //    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-            //     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, // Right face
-            //     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            //     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            //     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            //     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-            //     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-            //    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, // Bottom face
-            //     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-            //     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            //     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            //    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            //    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-            //    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, // Top face
-            //     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-            //     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            //     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            //    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            //    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-            //};
-
             Vertices.AddRange(vertices);
-            Window.Vertices = Vertices;
+            //UpdateBuffer();
         }
 
     }
