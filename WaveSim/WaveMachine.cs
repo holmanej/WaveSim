@@ -25,17 +25,12 @@ namespace WaveSim
                 {
                     Interval = 20
                 };
+                updateTimer.AutoReset = true;
                 updateTimer.Elapsed += UpdateTimer_Elapsed;
                 updateTimer.Start();
 
-
                 Helper.AppendRectPrism(-1f, 0f, -1f, 2f, 0.01f, 2f, 1f, 0.5f, 0.2f, 1f);
-                
-                
-                for (int i = 0; i < 100; i++)
-                {
-                    Helper.AppendRectPrism(-1f + i * 0.02f, 0.005f, -1f, 0.02f, 1f, 2f, 1f, 0.7f, 0.1f, 1f);                    
-                }
+                Helper.AppendRectPrism(-1f, 0.005f, -1f, 0.02f, 1f, 0.02f, 1f, 0.7f, 0.1f, 1f);
 
                 Helper.UpdateVertices();
 
@@ -51,16 +46,20 @@ namespace WaveSim
 
         private void ChangeData()
         {
-            SimWin.MagnitudeValues.Clear();
-
             float t = (float)SimWin.simTime;
             List<float> magnitudes = new List<float>();
-            magnitudes.Add(1f);
 
-            for (int i = 0; i < 100; i++)
-            {
-                magnitudes.Add((float)Math.Sin((t * 2) + (i / 10f)));
+            for (int i = 0; i < 10; i++)
+            {                
+                for (int j = 0; j < 100; j++)
+                {
+                    float m = (float)Math.Sin((t * 2f) - (j / 10f));
+                    magnitudes.Add(m);
+                    //magnitudes.Add((i * 0.002f) + (j * 0.002f));
+                    //Debug.WriteLine(i + j);
+                }
             }
+            //magnitudes.Add(0.5f);
             SimWin.MagnitudeValues = magnitudes;
         }
     }

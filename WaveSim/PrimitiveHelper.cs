@@ -13,8 +13,7 @@ namespace WaveSim
 {
     class PrimitiveHelper
     {
-        private List<float> Vertices = new List<float>();
-        private float index = 0;
+        private List<float> Vertices = new List<float>();        
 
         private WaveSimWindow Window;
 
@@ -26,7 +25,6 @@ namespace WaveSim
         public void ClearVertices()
         {
             Vertices.Clear();
-            index = 0;
         }
 
         public void UpdateVertices()
@@ -43,51 +41,50 @@ namespace WaveSim
         {
             List<float> vertices = new List<float>()
             {
-                x, y, z,              0f, 0f, z * 2,        r, b, g, a, index,	// 0
-                x + w, y, z,          0f, 0f, z * 2,        r, b, g, a, index,	// 1
-                x, y + h, z,          0f, 0f, z * 2,        r, b, g, a, index,	// 2
-                x + w, y, z,          0f, 0f, z * 2,        r, b, g, a, index,	// 1
-                x, y + h, z,          0f, 0f, z * 2,        r, b, g, a, index,	// 2
-                x + w, y + h, z,      0f, 0f, z * 2,        r, b, g, a, index,	// 3
-
-                x, y, z + d,          0f, 0f, (z + d) * 2,  r, b, g, a, index,	// 4
-                x + w, y, z + d,      0f, 0f, (z + d) * 2,  r, b, g, a, index,	// 5
-                x, y + h, z + d,      0f, 0f, (z + d) * 2,  r, b, g, a, index,	// 6
-                x + w, y, z + d,      0f, 0f, (z + d) * 2,  r, b, g, a, index,	// 5
-                x, y + h, z + d,      0f, 0f, (z + d) * 2,  r, b, g, a, index,	// 6
-                x + w, y + h, z + d,  0f, 0f, (z + d) * 2,  r, b, g, a, index,	// 7
-
-                x, y, z,              x * 2, 0f, 0f,        r, b, g, a, index,	// 0
-                x, y + h, z,          x * 2, 0f, 0f,        r, b, g, a, index,	// 2
-                x, y, z + d,          x * 2, 0f, 0f,        r, b, g, a, index,	// 4
-                x, y + h, z,          x * 2, 0f, 0f,        r, b, g, a, index,	// 2
-                x, y, z + d,          x * 2, 0f, 0f,        r, b, g, a, index,	// 4
-                x, y + h, z + d,      x * 2, 0f, 0f,        r, b, g, a, index,	// 6
-
-                x + w, y, z,          (x + w) * 2, 0f, 0f,  r, b, g, a, index,	// 1
-                x + w, y + h, z,      (x + w) * 2, 0f, 0f,  r, b, g, a, index,	// 3
-                x + w, y, z + d,      (x + w) * 2, 0f, 0f,  r, b, g, a, index,	// 5
-                x + w, y + h, z,      (x + w) * 2, 0f, 0f,  r, b, g, a, index,	// 3
-                x + w, y, z + d,      (x + w) * 2, 0f, 0f,  r, b, g, a, index,	// 5
-                x + w, y + h, z + d,  (x + w) * 2, 0f, 0f,  r, b, g, a, index,	// 7
-
-                x, y + h, z,          0f, (y + h) * 2, 0f,  r, b, g, a, index,	// 2
-                x + w, y + h, z,      0f, (y + h) * 2, 0f,  r, b, g, a, index,	// 3
-                x, y + h, z + d,      0f, (y + h) * 2, 0f,  r, b, g, a, index,	// 6
-                x + w, y + h, z,      0f, (y + h) * 2, 0f,  r, b, g, a, index,	// 3
-                x, y + h, z + d,      0f, (y + h) * 2, 0f,  r, b, g, a, index,	// 6
-                x + w, y + h, z + d,  0f, (y + h) * 2, 0f,  r, b, g, a, index,	// 7
-
-                x, y, z,              0f, y * 2, 0f,        r, b, g, a, index,	// 0
-                x + w, y, z,          0f, y * 2, 0f,        r, b, g, a, index,	// 1
-                x, y, z + d,          0f, y * 2, 0f,        r, b, g, a, index,	// 4
-                x + w, y, z,          0f, y * 2, 0f,        r, b, g, a, index,	// 1
-                x, y, z + d,          0f, y * 2, 0f,        r, b, g, a, index,	// 4
-                x + w, y, z + d,      0f, y * 2, 0f,        r, b, g, a, index	// 5
+                x, y, z,              0f, 0f, z * 2,        r, b, g, a,		// 0
+                x + w, y, z,          0f, 0f, z * 2,        r, b, g, a,		// 1
+                x, y + h, z,          0f, 0f, z * 2,        r, b, g, a,		// 2
+                x + w, y, z,          0f, 0f, z * 2,        r, b, g, a,		// 1
+                x, y + h, z,          0f, 0f, z * 2,        r, b, g, a,		// 2
+                x + w, y + h, z,      0f, 0f, z * 2,        r, b, g, a,		// 3
+						
+                x, y, z + d,          0f, 0f, (z + d) * 2,  r, b, g, a,		// 4
+                x + w, y, z + d,      0f, 0f, (z + d) * 2,  r, b, g, a,		// 5
+                x, y + h, z + d,      0f, 0f, (z + d) * 2,  r, b, g, a,		// 6
+                x + w, y, z + d,      0f, 0f, (z + d) * 2,  r, b, g, a,		// 5
+                x, y + h, z + d,      0f, 0f, (z + d) * 2,  r, b, g, a,		// 6
+                x + w, y + h, z + d,  0f, 0f, (z + d) * 2,  r, b, g, a,		// 7
+						
+                x, y, z,              x * 2, 0f, 0f,        r, b, g, a,		// 0
+                x, y + h, z,          x * 2, 0f, 0f,        r, b, g, a,		// 2
+                x, y, z + d,          x * 2, 0f, 0f,        r, b, g, a,		// 4
+                x, y + h, z,          x * 2, 0f, 0f,        r, b, g, a,		// 2
+                x, y, z + d,          x * 2, 0f, 0f,        r, b, g, a,		// 4
+                x, y + h, z + d,      x * 2, 0f, 0f,        r, b, g, a,		// 6
+						
+                x + w, y, z,          (x + w) * 2, 0f, 0f,  r, b, g, a,		// 1
+                x + w, y + h, z,      (x + w) * 2, 0f, 0f,  r, b, g, a,		// 3
+                x + w, y, z + d,      (x + w) * 2, 0f, 0f,  r, b, g, a,		// 5
+                x + w, y + h, z,      (x + w) * 2, 0f, 0f,  r, b, g, a,		// 3
+                x + w, y, z + d,      (x + w) * 2, 0f, 0f,  r, b, g, a,		// 5
+                x + w, y + h, z + d,  (x + w) * 2, 0f, 0f,  r, b, g, a,		// 7
+						
+                x, y + h, z,          0f, (y + h) * 2, 0f,  r, b, g, a,		// 2
+                x + w, y + h, z,      0f, (y + h) * 2, 0f,  r, b, g, a,		// 3
+                x, y + h, z + d,      0f, (y + h) * 2, 0f,  r, b, g, a,		// 6
+                x + w, y + h, z,      0f, (y + h) * 2, 0f,  r, b, g, a,		// 3
+                x, y + h, z + d,      0f, (y + h) * 2, 0f,  r, b, g, a,		// 6
+                x + w, y + h, z + d,  0f, (y + h) * 2, 0f,  r, b, g, a,		// 7
+						
+                x, y, z,              0f, y * 2, 0f,        r, b, g, a,		// 0
+                x + w, y, z,          0f, y * 2, 0f,        r, b, g, a,		// 1
+                x, y, z + d,          0f, y * 2, 0f,        r, b, g, a,		// 4
+                x + w, y, z,          0f, y * 2, 0f,        r, b, g, a,		// 1
+                x, y, z + d,          0f, y * 2, 0f,        r, b, g, a,		// 4
+                x + w, y, z + d,      0f, y * 2, 0f,        r, b, g, a 		// 5
             };
 
             Vertices.AddRange(vertices);
-            index++;
             //UpdateBuffer();
         }
 

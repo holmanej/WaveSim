@@ -63,6 +63,17 @@ namespace WaveSim
             GL.DetachShader(Handle, FragmentShader);
             GL.DeleteShader(FragmentShader);
             GL.DeleteShader(VertexShader);
+
+
+            // First, we have to get the number of active uniforms in the shader.
+            GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
+
+            // Loop over all the uniforms,
+            for (var i = 0; i < numberOfUniforms; i++)
+            {
+                // get the name of this uniform,
+                Debug.WriteLine(GL.GetActiveUniform(Handle, i, out _, out _) + GL.GetUniformLocation(Handle, GL.GetActiveUniform(Handle, i, out _, out _)));
+            }
         }
 
         public void Use()
