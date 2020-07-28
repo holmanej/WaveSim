@@ -17,6 +17,7 @@ namespace WaveSim
     {
         public float[] Vertices;
         public List<Matrix4> Transform = new List<Matrix4>();
+        public List<float> ScaleValues = new List<float>();
         public double simTime = 0;
 
         public Matrix4 Model;
@@ -153,6 +154,7 @@ namespace WaveSim
             Shader0.SetMatrix4("model", Model);
             Shader0.SetMatrix4("view", View);
             Shader0.SetMatrix4("projection", Projection);
+            GL.Uniform1(Shader0.GetAttribLoc("magnitudes"), ScaleValues.Count, ScaleValues.ToArray());
 
             GL.DrawArrays(PrimitiveType.Triangles, 0, BufferLength);
 

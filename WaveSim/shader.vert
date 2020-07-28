@@ -7,6 +7,7 @@ in vec3 vNormal;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform float magnitudes[2];
 
 out vec4 pos;
 out vec4 color;
@@ -16,7 +17,14 @@ uniform mat4 transform;
 
 void main()
 {
-	vec4 temp = transform * vec4(vPosition, 1.0);
+	mat4 scale = mat4(
+		1, 0, 0, 0,
+		0, magnitudes[gl_VertexID / 360], 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	
+	vec4 temp = transform * scale * vec4(vPosition, 1.0);
 
 	pos = temp * model;
 	color = vColor;	
