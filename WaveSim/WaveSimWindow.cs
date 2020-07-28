@@ -17,7 +17,7 @@ namespace WaveSim
     {
         public float[] Vertices;
         public List<Matrix4> Transform = new List<Matrix4>();
-        public List<float> ScaleValues = new List<float>();
+        public List<float> MagnitudeValues = new List<float>();
         public double simTime = 0;
 
         public Matrix4 Model;
@@ -71,6 +71,7 @@ namespace WaveSim
         {
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.DynamicDraw);
             BufferLength = Vertices.Length;
+            //Debug.WriteLine("bf: " + BufferLength);
         }
 
         private void SetAngle(float x, float y, float z)
@@ -119,15 +120,19 @@ namespace WaveSim
 
             int loc = Shader0.GetAttribLoc("vPosition");
             GL.EnableVertexAttribArray(loc);
-            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 10 * sizeof(float), 0);
+            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 11 * sizeof(float), 0);
 
             loc = Shader0.GetAttribLoc("vNormal");
             GL.EnableVertexAttribArray(loc);
-            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 10 * sizeof(float), 3 * sizeof(float));
+            GL.VertexAttribPointer(loc, 3, VertexAttribPointerType.Float, false, 11 * sizeof(float), 3 * sizeof(float));
 
             loc = Shader0.GetAttribLoc("vColor");
             GL.EnableVertexAttribArray(loc);
-            GL.VertexAttribPointer(loc, 4, VertexAttribPointerType.Float, false, 10 * sizeof(float), 6 * sizeof(float));
+            GL.VertexAttribPointer(loc, 4, VertexAttribPointerType.Float, false, 11 * sizeof(float), 6 * sizeof(float));
+
+            loc = Shader0.GetAttribLoc("index");
+            GL.EnableVertexAttribArray(loc);
+            GL.VertexAttribPointer(loc, 1, VertexAttribPointerType.Float, false, 11 * sizeof(float), 10 * sizeof(float));
 
             base.OnLoad(e);
         }
@@ -154,7 +159,8 @@ namespace WaveSim
             Shader0.SetMatrix4("model", Model);
             Shader0.SetMatrix4("view", View);
             Shader0.SetMatrix4("projection", Projection);
-            GL.Uniform1(Shader0.GetAttribLoc("magnitudes"), ScaleValues.Count, ScaleValues.ToArray());
+            GL.Uniform1(Shader0.GetUniformLoc("magnitudes"), MagnitudeValues.Count, MagnitudeValues.ToArray());
+            Debug.WriteLine("mag: " + MagnitudeValues.Count);
 
             GL.DrawArrays(PrimitiveType.Triangles, 0, BufferLength);
 

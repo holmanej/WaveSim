@@ -68,11 +68,6 @@ namespace WaveSim
         public void Use()
         {
             GL.UseProgram(Handle);
-
-            //Matrix4 id = Matrix4.Identity;
-
-            //int loc = GL.GetUniformLocation(Handle, "transform");
-            //GL.UniformMatrix4(loc, true, ref id);
         }
 
         private bool disposedValue = false;
@@ -101,7 +96,14 @@ namespace WaveSim
 
         public int GetAttribLoc(string attribName)
         {
+            GL.UseProgram(Handle);
             return GL.GetAttribLocation(Handle, attribName);
+        }
+
+        public int GetUniformLoc(string attribName)
+        {
+            GL.UseProgram(Handle);
+            return GL.GetUniformLocation(Handle, attribName);
         }
 
         public void SetMatrix4(string name, Matrix4 data)
