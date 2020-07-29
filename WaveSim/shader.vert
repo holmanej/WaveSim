@@ -3,11 +3,11 @@
 in vec3 vPosition;
 in vec4 vColor;
 in vec3 vNormal;
+in float vMagnitude;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform float magnitudes[1000];
 
 out vec4 pos;
 out vec4 color;
@@ -22,7 +22,7 @@ void main()
 	
 	mat4 mag = mat4(
 		1, 0, 0, 0,
-		0, magnitudes[i], 0, 0,
+		0, vMagnitude, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	);

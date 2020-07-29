@@ -10,7 +10,7 @@ void main()
 	vec4 lightColor = vec4(1f, 1f, 1f, 1f);
 	vec4 objColor = color;
 
-	float ambientPow = 0.15;
+	float ambientPow = 0.5;
 	vec4 ambient = ambientPow * lightColor;
 	
 	vec4 light = vec4(-0.5f, 0.7f, 2f, 1f);
