@@ -74,7 +74,7 @@ namespace WaveSim
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.DynamicDraw);
             BufferLength = 36;
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            //Debug.WriteLine("bf: " + BufferLength);
+            //Debug.WriteLine("bf: " + Vertices.Length);
             GL.BindBuffer(BufferTarget.ArrayBuffer, MagnitudeBufferObject);
             GL.BufferData(BufferTarget.ArrayBuffer, MagnitudeValues.Count * sizeof(float), MagnitudeValues.ToArray(), BufferUsageHint.DynamicDraw);
             MagnitudeLength = MagnitudeValues.Count;
@@ -122,7 +122,7 @@ namespace WaveSim
             Shader0.Use();
 
             Model = Matrix4.CreateRotationX(20f * 3.14f / 180);
-            View = Matrix4.CreateTranslation(0f, 0f, -5f);
+            View = Matrix4.CreateTranslation(0f, 0f, -10f);
             Projection = Matrix4.CreatePerspectiveFieldOfView(45f * 3.14f / 180f, Width / (float)Height, 0.1f, 100f);
 
             GL.BindVertexArray(VertexArrayObject);
@@ -138,13 +138,13 @@ namespace WaveSim
             loc = Shader0.GetAttribLoc("vColor");
             GL.EnableVertexAttribArray(loc);
             GL.VertexAttribPointer(loc, 4, VertexAttribPointerType.Float, false, 10 * sizeof(float), 6 * sizeof(float));
-            
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, MagnitudeBufferObject);
             loc = Shader0.GetAttribLoc("vMagnitude");
             GL.EnableVertexAttribArray(loc);
             GL.VertexAttribPointer(loc, 1, VertexAttribPointerType.Float, false, 1 * sizeof(float), 0);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.VertexAttribDivisor(MagnitudeBufferObject, 1);
+            GL.VertexAttribDivisor(loc, 1000 * 1000);
 
             base.OnLoad(e);
         }
@@ -171,11 +171,10 @@ namespace WaveSim
             Shader0.SetMatrix4("model", Model);
             Shader0.SetMatrix4("view", View);
             Shader0.SetMatrix4("projection", Projection);
-            Debug.WriteLine("mag: " + MagnitudeValues.Count);
+            //Debug.WriteLine("mag: " + MagnitudeValues.Count);
 
             GL.BindVertexArray(VertexArrayObject);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, BufferLength);
-            GL.DrawArraysInstanced(PrimitiveType.Triangles, BufferLength, BufferLength, MagnitudeValues.Count);
+            GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, BufferLength, 1000 * 1000);
             GL.BindVertexArray(0);
 
             Context.SwapBuffers();
