@@ -17,7 +17,6 @@ namespace WaveSim
     {
         public float[] Vertices;
         public List<Matrix4> Transform = new List<Matrix4>();
-        public List<float> MagnitudeValues = new List<float>();
         public double simTime = 0;
 
         public Matrix4 Model;
@@ -26,7 +25,6 @@ namespace WaveSim
 
         private int VertexArrayObject;
         private int VertexBufferObject;
-        private int MagnitudeBufferObject;
         private Shader Shader0;
 
         private int BufferLength;
@@ -40,7 +38,6 @@ namespace WaveSim
         {
             VertexArrayObject = GL.GenVertexArray();
             VertexBufferObject = GL.GenBuffer();
-            MagnitudeBufferObject = GL.GenBuffer();
 
             MouseMove += WaveSimWindow_MouseMove;
             MouseWheel += WaveSimWindow_MouseWheel;
@@ -73,11 +70,6 @@ namespace WaveSim
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.DynamicDraw);
             BufferLength = 36;
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            //Debug.WriteLine("bf: " + Vertices.Length);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, MagnitudeBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, MagnitudeValues.Count * sizeof(float), MagnitudeValues.ToArray(), BufferUsageHint.DynamicDraw);
-            MagnitudeLength = MagnitudeValues.Count;
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         }
 
@@ -139,20 +131,12 @@ namespace WaveSim
             GL.EnableVertexAttribArray(loc);
             GL.VertexAttribPointer(loc, 4, VertexAttribPointerType.Float, false, 10 * sizeof(float), 6 * sizeof(float));
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, MagnitudeBufferObject);
-            loc = Shader0.GetAttribLoc("vMagnitude");
-            GL.EnableVertexAttribArray(loc);
-            GL.VertexAttribPointer(loc, 1, VertexAttribPointerType.Float, false, 1 * sizeof(float), 0);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.VertexAttribDivisor(loc, 1000 * 1000);
-
             base.OnLoad(e);
         }
 
         protected override void OnUnload(EventArgs e)
         {
             GL.DeleteBuffer(VertexBufferObject);
-            GL.DeleteBuffer(MagnitudeBufferObject);
             Shader0.Dispose();
 
             base.OnUnload(e);
@@ -171,7 +155,7 @@ namespace WaveSim
             Shader0.SetMatrix4("model", Model);
             Shader0.SetMatrix4("view", View);
             Shader0.SetMatrix4("projection", Projection);
-            //Debug.WriteLine("mag: " + MagnitudeValues.Count);
+            GL.Uniform1(Shader0.GetUniformLoc("time"), (float)simTime);
 
             GL.BindVertexArray(VertexArrayObject);
             GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, BufferLength, 1000 * 1000);
